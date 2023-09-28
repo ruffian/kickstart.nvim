@@ -1,3 +1,4 @@
+HOME = os.getenv("HOME")
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
@@ -129,20 +130,6 @@ require('lazy').setup({
     },
   },
 
-  {
-    -- Add indentation guides even on blank lines
-    'lukas-reineke/indent-blankline.nvim',
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help indent_blankline.txt`
-    opts = {
-      char = '┊',
-      show_trailing_blankline_indent = true,
-      show_current_context = true,
-      show_end_of_line = true,
-      space_char_blankline = " ",
-    },
-  },
-
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
 
@@ -175,6 +162,8 @@ require('lazy').setup({
     },
     build = ':TSUpdate',
   },
+
+  { "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
@@ -216,6 +205,13 @@ vim.o.breakindent = true
 -- Save undo history
 vim.o.undofile = true
 vim.o.undolevels = 200
+vim.o.undodir = HOME .. '/.cache/nvim/undo'
+vim.o.backupdir = HOME .. '/.cache/nvim'
+--set.directory = HOME .. '/.cache/nvim/swaps'
+
+-- deactivate some unneeded language providers
+vim.g.loaded_python_provider = 0
+vim.g.loaded_perl_provider = 0
 
 -- Case-insensitive searching UNLESS \C or capital in search
 vim.o.ignorecase = true
@@ -502,6 +498,20 @@ cmp.setup {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
   },
+}
+
+-- [[ Configure indent-blankline ]]
+local highlight = {
+    "CursorColumn",
+    "Whitespace",
+}
+require("ibl").setup {
+    indent = { highlight = highlight, char = "" },
+    whitespace = {
+        highlight = highlight,
+        remove_blankline_trail = false,
+    },
+    scope = { enabled = false },
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
